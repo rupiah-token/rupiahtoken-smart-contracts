@@ -1,0 +1,30 @@
+{
+  "dev": {
+    "proxyAdmin": "0x367f6e0E23d2213AD8D5795c92Ea0D64f424865c",
+    "tokenImplementationV1": "0x66aec456Fb2Cf98585C9E653Ff4DDeb371f67B6E",
+    "walletImplementationV1": "0x468C4E80Cd4351aE2505574B397f1537ba318224",
+    "tokenProxy": "0xE25d8e03c704c22C26433e67fcad4CdE0A946444",
+    "walletProxy": "0xe257A808F80494523C1015BaCB9229530b5AdE14"
+  },
+  "ropsten": {
+    "proxyAdmin": "0x385BBF83D2fDA0721A2a078fA85e7D387E37d00c",
+    "tokenImplementationV1": "0x9214149E1D09310C52a2a603234cF6298C6F39dD",
+    "walletImplementationV1": "0xab362bbbafA79d92e27919e2bCf07B9A49F1CDE1",
+    "tokenProxy": "0x911EFaEBa909f3Bc540A22b8153687FB7c88e8Fe",
+    "walletProxy": "0x2bB385Fc1d9a6FD30BcfF7c314A51C184e721f2b"
+  },
+  "rinkeby": {
+    "proxyAdmin": "",
+    "tokenImplementationV1": "",
+    "walletImplementationV1": "",
+    "tokenProxy": "",
+    "walletProxy": ""
+  },
+  "mainnet": {
+    "proxyAdmin": "",
+    "tokenImplementationV1": "",
+    "walletImplementationV1": "",
+    "tokenProxy": "",
+    "walletProxy": ""
+  }
+}

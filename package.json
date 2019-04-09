@@ -1,0 +1,26 @@
+{
+  "name": "rupiahtoken",
+  "version": "1.0.0",
+  "description": "An ERC20 crypto token that represents Indonesian Rupiah.",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pintu-crypto/rupiahtoken.git"
+  },
+  "author": "Rupiah Token",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/pintu-crypto/rupiahtoken/issues"
+  },
+  "homepage": "https://github.com/pintu-crypto/rupiahtoken#readme",
+  "dependencies": {
+    "truffle-hdwallet-provider": "^1.0.4",
+    "openzeppelin-test-helpers": "^0.2.0"
+  }
+}
