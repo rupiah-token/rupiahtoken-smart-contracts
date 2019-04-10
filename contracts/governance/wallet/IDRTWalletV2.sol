@@ -44,7 +44,7 @@ import "./IDRTWalletV1.sol";
  * @dev Version 2 for ERC20RupiahToken
  * For demo purpose of zos upgradeability 
  */
-contract IDRTWalletV2 is RPTWallet {
+contract IDRTWalletV2 is IDRTWallet {
     string constant public shouldBeAString = "Upgraded to V2";
     string public shouldBeEmptyString = "Upgraded to V2";
 
