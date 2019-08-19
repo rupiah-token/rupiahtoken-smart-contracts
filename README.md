@@ -2,7 +2,7 @@
 Rupiah Token (ticker: IDRT) is a fiat stable coin to represent Indonesian Rupiah as ERC20-compatible token by one-to-one peg.
 
 This smart contract has been audited and certified by [CertiK](https://certik.org/), for more info please scan the badge.
-![](https://rupiahtoken.com/files/2019/04/badge_light-5-300x111.png)
+![](https://rupiahtoken.com/static/images/badge/certik.png)
 
 ## Contracts
 ### Governance
