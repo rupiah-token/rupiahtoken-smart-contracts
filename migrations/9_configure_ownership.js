@@ -6,7 +6,7 @@ const DeployedAddresses = require("./" + deployed_addresses_filename);
 const Config = require("./config.json");
 
 const ERC20RupiahToken = artifacts.require("./token/ERC20RupiahToken");
-const RPTWallet = artifacts.require("./governance/wallet/RPTWallet");
+const IDRTWallet = artifacts.require("./governance/wallet/IDRTWallet");
 const ProxyAdmin = artifacts.require("./zos/upgradeability/ProxyAdmin");
 
 module.exports = async function(deployer, network, accounts) {
@@ -14,22 +14,22 @@ module.exports = async function(deployer, network, accounts) {
     switch(network) {
         case 'development': 
             token = await ERC20RupiahToken.at(DeployedAddresses.dev.tokenProxy);
-            wallet = await RPTWallet.at(DeployedAddresses.dev.walletProxy);
+            wallet = await IDRTWallet.at(DeployedAddresses.dev.walletProxy);
             proxyAdmin = await ProxyAdmin.at(DeployedAddresses.dev.proxyAdmin);
             break;
         case 'ropsten':
             token = await ERC20RupiahToken.at(DeployedAddresses.ropsten.tokenProxy);
-            wallet = await RPTWallet.at(DeployedAddresses.ropsten.walletProxy);
+            wallet = await IDRTWallet.at(DeployedAddresses.ropsten.walletProxy);
             proxyAdmin = await ProxyAdmin.at(DeployedAddresses.ropsten.proxyAdmin);
             break;
         case 'rinkeby':                 
             token = await ERC20RupiahToken.at(DeployedAddresses.rinkeby.tokenProxy);
-            wallet = await RPTWallet.at(DeployedAddresses.rinkeby.walletProxy);
+            wallet = await IDRTWallet.at(DeployedAddresses.rinkeby.walletProxy);
             proxyAdmin = await ProxyAdmin.at(DeployedAddresses.rinkeby.proxyAdmin);
             break;
         case 'mainnet':
             token = await ERC20RupiahToken.at(DeployedAddresses.mainnet.tokenProxy);
-            wallet = await RPTWallet.at(DeployedAddresses.mainnet.walletProxy);
+            wallet = await IDRTWallet.at(DeployedAddresses.mainnet.walletProxy);
             proxyAdmin = await ProxyAdmin.at(DeployedAddresses.mainnet.proxyAdmin);
             break;
         };
