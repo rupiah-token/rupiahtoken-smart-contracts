@@ -26,7 +26,7 @@ contract("Upgradeability", function([
   const _decimals = new BN(2);
 
   beforeEach(async function() {
-    proxyAdmin = await TestUtils.createProxyAdmin();
+    proxyAdmin = await TestUtils.createProxyAdmin(deployer);
 
     tokenImplementation = await TestUtils.createImplementation(
       ERC20RupiahToken

@@ -18,11 +18,10 @@ contract("ERC20RupiahToken", function([
   const _symbol = "IDRT";
   const _currency = "IDR";
   const _decimals = new BN(2);
-
   const initialSupply = new BN(100 * 10 ** _decimals);
 
   beforeEach(async function() {
-    proxyAdmin = await TestUtils.createProxyAdmin();
+    proxyAdmin = await TestUtils.createProxyAdmin(deployer);
     tokenImplementation = await TestUtils.createImplementation(
       ERC20RupiahToken
     );

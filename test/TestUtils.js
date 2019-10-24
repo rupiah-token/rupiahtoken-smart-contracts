@@ -37,8 +37,8 @@ async function createProxy(implAddrs, proxyAdminAddrs, data) {
   return AdminUpgradeabilityProxy.new(implAddrs, proxyAdminAddrs, data);
 }
 
-async function createProxyAdmin() {
-  return ProxyAdmin.new({ from: deployer });
+async function createProxyAdmin(from) {
+  return ProxyAdmin.new({ from });
 }
 
 async function createImplementation(implementationContract) {

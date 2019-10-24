@@ -26,7 +26,7 @@ contract("ERC20RupiahToken Pausable", function([
   const pauser = owner;
 
   beforeEach(async function() {
-    proxyAdmin = await TestUtils.createProxyAdmin();
+    proxyAdmin = await TestUtils.createProxyAdmin(owner);
     tokenImplementation = await TestUtils.createImplementation(
       ERC20RupiahToken
     );
