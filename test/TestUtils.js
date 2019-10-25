@@ -19,7 +19,10 @@ const user_1 = "0x3e5e9111ae8eb78fe1cc3bb8915d5d461f3ef9a9";
 const user_2 = "0x28a8746e75304c0780e011bed21c72cd78cd535e";
 const attacker = "0xaca94ef8bd5ffee41947b4585a84bda5a3d3da6e";
 
-async function initializeTokenProxy(tokenProxy) {
+async function initializeTokenProxy(tokenProxy, options) {
+  const {
+    deployer,
+  } = options;
   return tokenProxy.initialize(name, symbol, currency, decimals, {
     from: deployer
   });
@@ -35,7 +38,7 @@ async function createProxy(implAddrs, proxyAdminAddrs, data) {
   return AdminUpgradeabilityProxy.new(implAddrs, proxyAdminAddrs, data);
 }
 
-async function createProxyAdmin() {
+async function createProxyAdmin(deployer = deployer) {
   return ProxyAdmin.new({ from: deployer });
 }
 
