@@ -10,32 +10,37 @@ const IDRTWallet = artifacts.require("./governance/wallet/IDRTWallet");
 const ProxyAdmin = artifacts.require("./zos/upgradeability/ProxyAdmin");
 
 module.exports = async function(deployer, network, accounts) {
-    let token, wallet, proxyAdmin;
+    let token, tokenL, wallet, proxyAdmin;
     switch(network) {
-        case 'development': 
+        case 'development':
             token = await ERC20RupiahToken.at(DeployedAddresses.dev.tokenProxy);
+            tokenL = await ERC20RupiahToken.at(DeployedAddresses.dev.tokenProxyL);
             wallet = await IDRTWallet.at(DeployedAddresses.dev.walletProxy);
             proxyAdmin = await ProxyAdmin.at(DeployedAddresses.dev.proxyAdmin);
             break;
         case 'ropsten':
             token = await ERC20RupiahToken.at(DeployedAddresses.ropsten.tokenProxy);
+            tokenL = await ERC20RupiahToken.at(DeployedAddresses.ropsten.tokenProxyL);
             wallet = await IDRTWallet.at(DeployedAddresses.ropsten.walletProxy);
             proxyAdmin = await ProxyAdmin.at(DeployedAddresses.ropsten.proxyAdmin);
             break;
-        case 'rinkeby':                 
+        case 'rinkeby':
             token = await ERC20RupiahToken.at(DeployedAddresses.rinkeby.tokenProxy);
+            tokenL = await ERC20RupiahToken.at(DeployedAddresses.rinkeby.tokenProxyL);
             wallet = await IDRTWallet.at(DeployedAddresses.rinkeby.walletProxy);
             proxyAdmin = await ProxyAdmin.at(DeployedAddresses.rinkeby.proxyAdmin);
             break;
         case 'mainnet':
             token = await ERC20RupiahToken.at(DeployedAddresses.mainnet.tokenProxy);
+            tokenL = await ERC20RupiahToken.at(DeployedAddresses.mainnet.tokenProxyL);
             wallet = await IDRTWallet.at(DeployedAddresses.mainnet.walletProxy);
             proxyAdmin = await ProxyAdmin.at(DeployedAddresses.mainnet.proxyAdmin);
             break;
         };
-        
+
     console.log("Change ERC20 Ownership to wallet address...");
     await token.transferOwnership(wallet.address);
+    await tokenL.transferOwnership(wallet.address);
 
     console.log("Change Proxy Admin to wallet address...");
     await proxyAdmin.transferOwnership(wallet.address);
@@ -44,14 +49,18 @@ module.exports = async function(deployer, network, accounts) {
     await wallet.transferOwnership(Config.owner);
 
     const current_token_owner = await token.owner();
+    const current_luniverse_token_owner = await tokenL.owner();
+
     const current_proxy_admin_owner = await proxyAdmin.owner();
     const current_wallet_owner = await wallet.superOwner();
 
     assert.strictEqual(current_token_owner, wallet.address);
+    assert.strictEqual(current_luniverse_token_owner, wallet.address);
     assert.strictEqual(current_proxy_admin_owner, wallet.address);
     assert.strictEqual(current_wallet_owner, Config.owner);
 
     console.log("Current owner of the token", current_token_owner);
+    console.log("Current owner of the luniverse token", current_luniverse_token_owner);
     console.log("Current owner of the proxy admin", current_proxy_admin_owner);
     console.log("Current owner of the wallet", current_wallet_owner);
 };
