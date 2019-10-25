@@ -11,16 +11,16 @@ contract RupiahFeeCollector is IFeeCollector, Ownable {
     event DistributeFee(address indexed _collector, uint256 _value);
     event Withdraw(address indexed _from, uint256 value);
 
-    // 토큰 수수료 문자와 분모
+    // Token Fee Numerator and Denominator, 토큰 수수료 문자와 분모
     uint256 _feeRatioNumeratorFromToken;
     uint256 _feeRatioDenominatorFromToken;
 
-    // 수수료 가져갈 목록 //TODO: struct로 합치는게 좋을듯
+    // the list consists of fee collector, 수수료 가져갈 목록
     address[] _feeCollectors;
     // 각각이 가져가는 수수료 비율
     mapping(address => uint256) _feeRatio;
     mapping(address => uint256) _deposit;
-    // 각각 가져갈 수수료율을 계산하기 위해서 나눠줄 분모 (소수점이 안되니깐)
+    // sum of ratio which collectors have.  각각 가져갈 수수료율을 계산하기 위해서 나눠줄 분모 (소수점이 안되니깐)
     uint256 _feeDenominatorInCollectors;
 
     // whitelist
@@ -51,13 +51,13 @@ contract RupiahFeeCollector is IFeeCollector, Ownable {
     }
 
     /**
-      address[] _initFromWhitelistEntries `from` 화이트리스트 주소 목록
-      address[] _initToWhitelistEntries `to` 화이트리스트 주소 목록
-      address[] _initFeeCollectorEntries FeeCollector의 주소 목록  !! 아래 비율과 순서가 맞아야 함 !!
-      uint256[] _initFeeRatioInCollectorsEntries 각 FeeCollecor 간 fee 비율 ex 10, 20, 30
-      address _initIDRTContractAddress RupiahToken 컨트랙트 주소
-      uint256 _initFeeRatioNumerator 전체 수수료 비율의 분자   예) 1.5%를 구현하고 싶으면 => 15
-      uint256 _initFeeRatioDenominator 전체 수수료 비율의 분모 예) 1.5%를 구현하고 싶으면 => 1000
+      address[] _initFromWhitelistEntries `from` whitelist`from` 화이트리스트 주소 목록
+      address[] _initToWhitelistEntries `to` whitelist `to` 화이트리스트 주소 목록
+      address[] _initFeeCollectorEntries account list of fee collectors FeeCollector의 주소 목록  !! 아래 비율과 순서가 맞아야 함 !!
+      uint256[] _initFeeRatioInCollectorsEntries fee ratio list, each collector have 각 FeeCollecor 간 fee 비율 ex 10, 20, 30
+      address _initIDRTContractAddress Contract Address of RupiahToken RupiahToken 컨트랙트 주소
+      uint256 _initFeeRatioNumerator numerator of total fee ratio 전체 수수료 비율의 분자   예) 1.5%를 구현하고 싶으면 => 15
+      uint256 _initFeeRatioDenominator denominator of total fee ratio 전체 수수료 비율의 분모 예) 1.5%를 구현하고 싶으면 => 1000
     */
     constructor(address[] _initFromWhitelistEntries, address[] _initToWhitelistEntries,
         address[] _initFeeCollectorEntries, uint256[] _initFeeRatioInCollectorsEntries,
@@ -95,7 +95,7 @@ contract RupiahFeeCollector is IFeeCollector, Ownable {
         if (isWhitelist(_from, SENDER) || isWhitelist(_to, RECEIVER) || _from == address(this)) {
             return 0;
         }
-        return _calcFee(_value); // 최종 수수료 리턴
+        return _calcFee(_value); // return calculated Fee 최종 수수료 리턴
     }
 
     function _calcFee(uint256 _value) private returns (uint256){
