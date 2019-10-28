@@ -12,18 +12,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pintu-crypto/rupiahtoken.git"
+    "url": "git+https://github.com/rupiah-token/rupiahtoken-smart-contracts.git"
   },
   "author": "Rupiah Token",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/pintu-crypto/rupiahtoken/issues"
+    "url": "https://github.com/rupiah-token/rupiahtoken-smart-contracts//issues"
   },
-  "homepage": "https://github.com/pintu-crypto/rupiahtoken#readme",
+  "homepage": "https://github.com/rupiah-token/rupiahtoken-smart-contracts/#readme",
   "dependencies": {
-    "ganache-cli": "^6.6.0",
+    "assert": "^2.0.0",
     "openzeppelin-test-helpers": "^0.2.0",
-    "truffle": "^5.0.33",
     "truffle-hdwallet-provider": "^1.0.4",
     "web3": "^1.2.1"
   }
