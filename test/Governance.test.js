@@ -26,7 +26,7 @@ contract("Governance", function([
   const _decimals = new BN(2);
 
   beforeEach(async function() {
-    proxyAdmin = await TestUtils.createProxyAdmin();
+    proxyAdmin = await TestUtils.createProxyAdmin(deployer);
 
     tokenImplementation = await TestUtils.createImplementation(
       ERC20RupiahToken
@@ -124,7 +124,7 @@ contract("Governance", function([
               this.wallet.submitTransaction(
                 walletProxy.address,
                 0,
-                "0x7065cb48000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b117",
+                `0x7065cb48000000000000000000000000${anotherAccount.substring(2)}`,
                 { from: anotherAccount }
               )
             );
@@ -139,7 +139,7 @@ contract("Governance", function([
               this.wallet.submitTransaction(
                 proxyAdmin.address,
                 0,
-                "0x7065cb48000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b117",
+                `0x7065cb48000000000000000000000000${anotherAccount.substring(2)}`,
                 { from: deployer }
               )
             );
@@ -153,7 +153,7 @@ contract("Governance", function([
             await this.wallet.submitTransaction(
               walletProxy.address,
               0,
-              "0x7065cb48000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b117",
+              `0x7065cb48000000000000000000000000${anotherAccount.substring(2)}`,
               { from: account_1 }
             );
           });
@@ -203,7 +203,7 @@ contract("Governance", function([
               this.wallet.submitTransaction(
                 walletProxy.address,
                 0,
-                "0x173825d9000000000000000000000000e11ba2b4d45eaed5996cd0823791e0c93114882d",
+                `0x173825d9000000000000000000000000${account_3.substring(2)}`,
                 { from: anotherAccount }
               )
             );
@@ -218,7 +218,7 @@ contract("Governance", function([
               this.wallet.submitTransaction(
                 proxyAdmin.address,
                 0,
-                "0x173825d9000000000000000000000000e11ba2b4d45eaed5996cd0823791e0c93114882d",
+                `0x173825d9000000000000000000000000${account_3.substring(2)}`,
                 { from: deployer }
               )
             );
@@ -232,7 +232,7 @@ contract("Governance", function([
             await this.wallet.submitTransaction(
               walletProxy.address,
               0,
-              "0x173825d9000000000000000000000000e11ba2b4d45eaed5996cd0823791e0c93114882d",
+              `0x173825d9000000000000000000000000${account_3.substring(2)}`,
               { from: account_1 }
             );
           });
@@ -284,7 +284,7 @@ contract("Governance", function([
               this.wallet.submitTransaction(
                 walletProxy.address,
                 0,
-                "0xe20056e6000000000000000000000000e11ba2b4d45eaed5996cd0823791e0c93114882d000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b117",
+                `0xe20056e6000000000000000000000000${account_3.substring(2)}000000000000000000000000${anotherAccount.substring(2)}`,
                 { from: anotherAccount }
               )
             );
@@ -299,7 +299,7 @@ contract("Governance", function([
               this.wallet.submitTransaction(
                 proxyAdmin.address,
                 0,
-                "0xe20056e6000000000000000000000000e11ba2b4d45eaed5996cd0823791e0c93114882d000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b117",
+                `0xe20056e6000000000000000000000000${account_3.substring(2)}000000000000000000000000${anotherAccount.substring(2)}`,
                 { from: deployer }
               )
             );
@@ -313,7 +313,7 @@ contract("Governance", function([
             await this.wallet.submitTransaction(
               walletProxy.address,
               0,
-              "0xe20056e6000000000000000000000000e11ba2b4d45eaed5996cd0823791e0c93114882d000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b117",
+              `0xe20056e6000000000000000000000000${account_3.substring(2)}000000000000000000000000${anotherAccount.substring(2)}`,
               { from: account_1 }
             );
           });
@@ -351,7 +351,7 @@ contract("Governance", function([
             await this.wallet.submitTransaction(
               walletProxy.address,
               0,
-              "0xe20056e6000000000000000000000000e11ba2b4d45eaed5996cd0823791e0c93114882d000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b117",
+              `0xe20056e6000000000000000000000000${account_3.substring(2)}000000000000000000000000${anotherAccount.substring(2)}`,
               { from: account_1 }
             );
           });
@@ -680,7 +680,7 @@ contract("Governance", function([
 
         /*describe('upgradeandcall token', function (){
           beforeEach('submit transaction', async function () {
-            await this.wallet.submitTransaction(proxyAdmin.address, 0, 
+            await this.wallet.submitTransaction(proxyAdmin.address, 0,
               "0x9623609d000000000000000000000000"+tokenProxy.address.replace('0x','')+"000000000000000000000000"+this.tokenImplementationV2.address.replace('0x','')+"0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000a3078303666646465303300000000000000000000000000000000000000000000",
               { from : account_1 });
           });
@@ -747,7 +747,7 @@ contract("Governance", function([
               this.wallet.submitTransaction(
                 tokenProxy.address,
                 0,
-                "0x40c10f19000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b1170000000000000000000000000000000000000000000000000000000002faf080",
+                `0x40c10f19000000000000000000000000${anotherAccount.substring(2)}0000000000000000000000000000000000000000000000000000000002faf080`,
                 { from: anotherAccount }
               )
             );
@@ -760,7 +760,7 @@ contract("Governance", function([
               this.wallet.submitTransaction(
                 tokenProxy.address,
                 0,
-                "0x40c10f19000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b1170000000000000000000000000000000000000000000000000000000008f0d180",
+                `0x40c10f19000000000000000000000000${anotherAccount.substring(2)}0000000000000000000000000000000000000000000000000000000002faf080`,
                 { from: anotherAccount }
               )
             );
@@ -775,7 +775,7 @@ contract("Governance", function([
               this.wallet.submitTransaction(
                 tokenProxy.address,
                 0,
-                "0x40c10f19000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b1170000000000000000000000000000000000000000000000000000000002faf080",
+                `0x40c10f19000000000000000000000000${anotherAccount.substring(2)}0000000000000000000000000000000000000000000000000000000002faf080`,
                 { from: deployer }
               )
             );
@@ -788,7 +788,7 @@ contract("Governance", function([
               this.wallet.submitTransaction(
                 tokenProxy.address,
                 0,
-                "0x40c10f19000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b1170000000000000000000000000000000000000000000000000000000008f0d180",
+                `0x40c10f19000000000000000000000000${anotherAccount.substring(2)}0000000000000000000000000000000000000000000000000000000002faf080`,
                 { from: deployer }
               )
             );
@@ -802,7 +802,7 @@ contract("Governance", function([
             await this.wallet.submitTransaction(
               tokenProxy.address,
               0,
-              "0x40c10f19000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b1170000000000000000000000000000000000000000000000000000000002faf080",
+              `0x40c10f19000000000000000000000000${anotherAccount.substring(2)}0000000000000000000000000000000000000000000000000000000002faf080`,
               { from: account_1 }
             );
           });
@@ -828,7 +828,7 @@ contract("Governance", function([
             await this.wallet.submitTransaction(
               tokenProxy.address,
               0,
-              "0x40c10f19000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b1170000000000000000000000000000000000000000000000000000000005f5e100",
+              `0x40c10f19000000000000000000000000${anotherAccount.substring(2)}0000000000000000000000000000000000000000000000000000000005f5e100`,
               { from: account_1 }
             );
           });
@@ -854,7 +854,7 @@ contract("Governance", function([
             await this.wallet.submitTransaction(
               tokenProxy.address,
               0,
-              "0x40c10f19000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b1170000000000000000000000000000000000000000000000000000000008f0d180",
+              `0x40c10f19000000000000000000000000${anotherAccount.substring(2)}0000000000000000000000000000000000000000000000000000000008f0d180`,
               { from: account_1 }
             );
           });
@@ -873,11 +873,15 @@ contract("Governance", function([
           });
 
           it("execute transaction if approved by other admin and owner finalizes", async function() {
+            console.log(1);
             await this.wallet.confirmTransaction(0, { from: account_2 });
+            console.log(2);
             await this.wallet.finalizeTransaction(0, { from: deployer });
+            console.log(3);
             (await this.token.totalSupply()).should.be.bignumber.equal(
               "15000001000"
             );
+            console.log(4);
             (await this.token.balanceOf(
               anotherAccount
             )).should.be.bignumber.equal("15000000500");
@@ -1026,7 +1030,7 @@ contract("Governance", function([
               this.wallet.submitTransaction(
                 tokenProxy.address,
                 0,
-                "0xf2fde38b000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b117",
+                `0xf2fde38b000000000000000000000000${anotherAccount.substring(2)}`,
                 { from: anotherAccount }
               )
             );
@@ -1041,7 +1045,7 @@ contract("Governance", function([
               this.wallet.submitTransaction(
                 tokenProxy.address,
                 0,
-                "0xf2fde38b000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b117",
+                `0xf2fde38b000000000000000000000000${anotherAccount.substring(2)}`,
                 { from: deployer }
               )
             );
@@ -1055,7 +1059,7 @@ contract("Governance", function([
             await this.wallet.submitTransaction(
               tokenProxy.address,
               0,
-              "0xf2fde38b000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b117",
+              `0xf2fde38b000000000000000000000000${anotherAccount.substring(2)}`,
               { from: account_1 }
             );
           });
@@ -1239,7 +1243,7 @@ contract("Governance", function([
               this.wallet.submitTransaction(
                 tokenProxy.address,
                 0,
-                "0x79cc6790000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b1170000000000000000000000000000000000000000000000000000000000000005",
+                `0x79cc6790000000000000000000000000${anotherAccount.substring(2)}0000000000000000000000000000000000000000000000000000000000000005`,
                 { from: anotherAccount }
               )
             );
@@ -1254,7 +1258,7 @@ contract("Governance", function([
               this.wallet.submitTransaction(
                 tokenProxy.address,
                 0,
-                "0x79cc6790000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b1170000000000000000000000000000000000000000000000000000000000000005",
+                `0x79cc6790000000000000000000000000${anotherAccount.substring(2)}0000000000000000000000000000000000000000000000000000000000000005`,
                 { from: deployer }
               )
             );
@@ -1268,7 +1272,7 @@ contract("Governance", function([
             await this.wallet.submitTransaction(
               tokenProxy.address,
               0,
-              "0x79cc6790000000000000000000000000d03ea8624c8c5987235048901fb614fdca89b1170000000000000000000000000000000000000000000000000000000000000005",
+              `0x79cc6790000000000000000000000000${anotherAccount.substring(2)}0000000000000000000000000000000000000000000000000000000000000005`,
               { from: account_1 }
             );
           });

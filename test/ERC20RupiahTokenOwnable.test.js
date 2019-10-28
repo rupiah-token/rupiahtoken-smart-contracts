@@ -6,7 +6,7 @@ const ERC20RupiahToken = artifacts.require("ERC20RupiahToken");
 
 contract("ERC20RupiahToken Ownable", function([owner, ...otherAccounts]) {
   beforeEach(async function() {
-    proxyAdmin = await TestUtils.createProxyAdmin();
+    proxyAdmin = await TestUtils.createProxyAdmin(owner);
     tokenImplementation = await TestUtils.createImplementation(
       ERC20RupiahToken
     );

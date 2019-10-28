@@ -21,7 +21,7 @@ contract("ERC20RupiahToken Blacklistable", function([
   const _decimals = new BN(2);
 
   beforeEach(async function() {
-    proxyAdmin = await TestUtils.createProxyAdmin();
+    proxyAdmin = await TestUtils.createProxyAdmin(owner);
     tokenImplementation = await TestUtils.createImplementation(
       ERC20RupiahToken
     );
