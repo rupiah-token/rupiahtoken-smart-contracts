@@ -854,7 +854,7 @@ contract("Governance", function([
             await this.wallet.submitTransaction(
               tokenProxy.address,
               0,
-              `0x40c10f19000000000000000000000000${anotherAccount.substring(2)}0000000000000000000000000000000000000000000000000000000002faf080`,
+              `0x40c10f19000000000000000000000000${anotherAccount.substring(2)}0000000000000000000000000000000000000000000000000000000008f0d180`,
               { from: account_1 }
             );
           });
