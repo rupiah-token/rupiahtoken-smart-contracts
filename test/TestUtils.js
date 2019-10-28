@@ -19,7 +19,7 @@ const {
   user_1,
   user_2,
   attacker,
-} = require('../migrations/config');
+} = require('./test_config');
 
 async function initializeTokenProxy(tokenProxy) {
   return tokenProxy.initialize(name, symbol, currency, decimals, {
