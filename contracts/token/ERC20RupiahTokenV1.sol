@@ -1,6 +1,6 @@
 /**
  * Rupiah Token Smart Contract
- * Copyright (C) 2019 PT. Rupiah Token Indonesia <https://www.rupiahtoken.com/>. 
+ * Copyright (C) 2019 PT. Rupiah Token Indonesia <https://www.rupiahtoken.com/>.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,14 +14,14 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * This file incorporates work covered byt the following copyright and
  * permission notice:
  *
- *     OpenZeppelin <https://github.com/OpenZeppelin/openzeppelin-solidity/>     
+ *     OpenZeppelin <https://github.com/OpenZeppelin/openzeppelin-solidity/>
  *     Copyright (c) 2016 Smart Contract Solutions, Inc.
  *     Modified for Rupiah Token by FengkieJ 2019.
- * 
+ *
  *     centre-tokens <https://github.com/centrehq/centre-tokens>
  *     Copyright CENTRE SECZ 2018.
  *     Modified for Rupiah Token by FengkieJ 2019.
@@ -31,21 +31,21 @@
  *
  *     The MIT License (MIT)
  *
- *     Permission is hereby granted, free of charge, to any person obtaining a copy 
- *     of this software and associated documentation files (the "Software"), to deal 
- *     in the Software without restriction, including without limitation the rights 
- *     to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
- *     copies of the Software, and to permit persons to whom the Software is furnished to 
+ *     Permission is hereby granted, free of charge, to any person obtaining a copy
+ *     of this software and associated documentation files (the "Software"), to deal
+ *     in the Software without restriction, including without limitation the rights
+ *     to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *     copies of the Software, and to permit persons to whom the Software is furnished to
  *     do so, subject to the following conditions:
  *
- *     The above copyright notice and this permission notice shall be included in all 
+ *     The above copyright notice and this permission notice shall be included in all
  *     copies or substantial portions of the Software.
  *
- *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
- *     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- *     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  *     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+ *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  *     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 pragma solidity 0.4.25;
@@ -56,6 +56,7 @@ import "../governance/Blacklistable.sol";
 import "../lifecycle/Pausable.sol";
 import "../ownership/Ownable.sol";
 import "../zos/Initializable.sol";
+import "../fee/IFeeCollector.sol";
 
 /**
  * @title ERC20RupiahToken
@@ -63,16 +64,21 @@ import "../zos/Initializable.sol";
  */
 contract ERC20RupiahToken is IERC20, Blacklistable, Initializable {
     using SafeMath for uint256;
-    
+
+    event Mint(address indexed beneficiary, uint256 amount);
+    event Burn(address indexed beneficiary, uint256 amount);
+    event TransferWithFee(address indexed from, address indexed to, uint256 amount, address indexed feeCollector, uint256 fee);
+
+    IFeeCollector RupiahFeeCollector;
     string internal _name;
     string internal _symbol;
     string internal _currency;
     uint8 internal _decimals;
-    
+
     mapping (address => uint256) internal _balances;
     mapping (address => mapping (address => uint256)) internal _allowed;
     uint256 internal _totalSupply;
-    
+
     /**
      * @dev Initialize the smart contract to work with ZeppelinOS, can only be called once.
      * @param name describes the name of the token.
@@ -101,7 +107,7 @@ contract ERC20RupiahToken is IERC20, Blacklistable, Initializable {
     function symbol() public view returns (string memory) {
         return _symbol;
     }
-    
+
     /**
      * @return the currency of the token.
      */
@@ -148,12 +154,7 @@ contract ERC20RupiahToken is IERC20, Blacklistable, Initializable {
     * @param value The amount to be transferred.
     */
     function transfer(address to, uint256 value) public whenNotPaused notBlacklisted(msg.sender) notBlacklisted(to) returns (bool) {
-        require(to != address(0));
-
-        _balances[msg.sender] = _balances[msg.sender].sub(value);
-        _balances[to] = _balances[to].add(value);
-        emit Transfer(msg.sender, to, value);
-        
+        _transferWithFee(msg.sender, to, value, RupiahFeeCollector);
         return true;
     }
 
@@ -180,13 +181,13 @@ contract ERC20RupiahToken is IERC20, Blacklistable, Initializable {
      * @param value uint256 the amount of tokens to be transferred
      */
     function transferFrom(address from, address to, uint256 value) public whenNotPaused notBlacklisted(msg.sender) notBlacklisted(from) notBlacklisted(to) returns (bool) {
-        require(to != address(0));
-
         _approve(from, msg.sender, _allowed[from][msg.sender].sub(value));
+        _transferWithFee(from, to, value, RupiahFeeCollector);
+        return true;
+    }
 
-        _balances[from] = _balances[from].sub(value);
-        _balances[to] = _balances[to].add(value);                
-        emit Transfer(from, to, value);
+    function transferBridge(address to, uint256 value, address bridge) whenNotPaused notBlacklisted(msg.sender) notBlacklisted(to)public returns (bool) {
+        _transferWithFee(msg.sender, to, value, bridge);
         return true;
     }
 
@@ -229,11 +230,13 @@ contract ERC20RupiahToken is IERC20, Blacklistable, Initializable {
      */
     function mint(address account, uint256 value) public whenNotPaused notBlacklisted(account) onlyOwner {
         require(account != address(0));
-        
-        value = value.mul(10**_decimals);
+
+        value = value.mul(10 ** uint256(_decimals));
         _totalSupply = _totalSupply.add(value);
         _balances[account] = _balances[account].add(value);
         emit Transfer(address(0), account, value);
+        emit Mint(account, value);
+
     }
 
     /**
@@ -241,11 +244,12 @@ contract ERC20RupiahToken is IERC20, Blacklistable, Initializable {
      * @param value The amount that will be burnt.
      */
     function burn(uint256 value) public whenNotPaused onlyOwner {
-        value = value.mul(10**_decimals);
+        value = value.mul(10 ** uint256(_decimals));
 
         _totalSupply = _totalSupply.sub(value);
         _balances[msg.sender] = _balances[msg.sender].sub(value);
         emit Transfer(msg.sender, address(0), value);
+        emit Burn(msg.sender, value);
     }
 
     /**
@@ -258,15 +262,16 @@ contract ERC20RupiahToken is IERC20, Blacklistable, Initializable {
      */
     function burnFrom(address account, uint256 value) public whenNotPaused notBlacklisted(account) onlyOwner {
         require(account != address(0));
-        
-        value = value.mul(10**_decimals);
+
+        value = value.mul(10 ** uint256(_decimals));
         _totalSupply = _totalSupply.sub(value);
         _balances[account] = _balances[account].sub(value);
         emit Transfer(account, address(0), value);
+        emit Burn(account, value);
 
         _approve(account, msg.sender, _allowed[account][msg.sender].sub(value));
     }
-    
+
     /**
      * @dev Approve an address to spend another addresses' tokens.
      * @param owner The address that owns the tokens.
@@ -279,5 +284,27 @@ contract ERC20RupiahToken is IERC20, Blacklistable, Initializable {
 
         _allowed[owner][spender] = value;
         emit Approval(owner, spender, value);
+    }
+
+    function setCollectorContract(address contractAddress) onlyOwner external {
+        RupiahFeeCollector = IFeeCollector(contractAddress);
+    }
+
+    function _transfer(address from, address to, uint256 value) internal {
+        require(to != address(0));
+
+        _balances[from] = _balances[from].sub(value);
+        _balances[to] = _balances[to].add(value);
+        emit Transfer(from, to, value);
+    }
+
+    function _transferWithFee(address from, address to, uint256 value, address bridge) internal {
+        IFeeCollector feeCollector = IFeeCollector(bridge);
+
+        uint256 fee = feeCollector.calcFee(from, to, value);
+        emit TransferWithFee(from, to, value, bridge, fee);
+
+        _transfer(from, bridge, fee);
+        _transfer(from, to, value);
     }
 }
