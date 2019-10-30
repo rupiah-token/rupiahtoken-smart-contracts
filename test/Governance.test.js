@@ -873,15 +873,11 @@ contract("Governance", function([
           });
 
           it("execute transaction if approved by other admin and owner finalizes", async function() {
-            console.log(1);
             await this.wallet.confirmTransaction(0, { from: account_2 });
-            console.log(2);
             await this.wallet.finalizeTransaction(0, { from: deployer });
-            console.log(3);
             (await this.token.totalSupply()).should.be.bignumber.equal(
               "15000001000"
             );
-            console.log(4);
             (await this.token.balanceOf(
               anotherAccount
             )).should.be.bignumber.equal("15000000500");

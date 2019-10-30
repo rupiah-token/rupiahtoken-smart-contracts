@@ -1,6 +1,7 @@
 const TokenImplementation = artifacts.require("ERC20RupiahToken");
 const ProxyAdmin = artifacts.require("ProxyAdmin");
 const AdminUpgradeabilityProxy = artifacts.require("AdminUpgradeabilityProxy");
+const RupiahFeeCollector = artifacts.require('RupiahFeeCollector');
 
 /* Token Details */
 const name = "Rupiah Token";
@@ -19,7 +20,17 @@ const {
   user_1,
   user_2,
   attacker,
+  feeCollector,
 } = require('./test_config');
+
+const {
+  fromWhitelist,
+  toWhitelist,
+  feeCollectors,
+  feeCollectorRatio,
+  feeRatioNumerator,
+  feeRatioDenominator
+} = feeCollector;
 
 async function initializeTokenProxy(tokenProxy) {
   return tokenProxy.initialize(name, symbol, currency, decimals, {
@@ -49,11 +60,16 @@ async function transferOwnership(contract, currentOwner, to) {
   return contract.transferOwnership(to, { from: currentOwner });
 }
 
+async function createFeeCollector(tokenAddress, from) {
+  return RupiahFeeCollector.new(fromWhitelist, toWhitelist, feeCollectors, feeCollectorRatio, tokenAddress, feeRatioNumerator, feeRatioDenominator, { from });
+}
+
 module.exports = {
   createProxyAdmin: createProxyAdmin,
   createImplementation: createImplementation,
   transferOwnership: transferOwnership,
   createProxy: createProxy,
   initializeWalletProxy: initializeWalletProxy,
-  initializeTokenProxy: initializeTokenProxy
+  initializeTokenProxy: initializeTokenProxy,
+  createFeeCollector,
 };

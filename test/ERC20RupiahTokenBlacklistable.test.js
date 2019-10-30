@@ -7,6 +7,7 @@ const {
 const { ZERO_ADDRESS } = constants;
 const TestUtils = require("./TestUtils");
 const ERC20RupiahToken = artifacts.require("ERC20RupiahToken");
+const { feeCollector } = require('./test_config');
 
 contract("ERC20RupiahToken Blacklistable", function([
   owner,
@@ -19,6 +20,7 @@ contract("ERC20RupiahToken Blacklistable", function([
   const _symbol = "IDRT";
   const _currency = "IDR";
   const _decimals = new BN(2);
+  const ratio = feeCollector.feeRatioNumerator / feeCollector.feeRatioDenominator;
 
   beforeEach(async function() {
     proxyAdmin = await TestUtils.createProxyAdmin(owner);
@@ -33,6 +35,8 @@ contract("ERC20RupiahToken Blacklistable", function([
 
     this.token = await ERC20RupiahToken.at(tokenProxy.address);
     await TestUtils.initializeTokenProxy(this.token);
+    this.feeCollector = await TestUtils.createFeeCollector(tokenProxy.address, owner);
+    await this.token.setCollectorContract(this.feeCollector.address);
 
     await this.token.mint(account_1, 100);
     await this.token.mint(account_2, 100);
@@ -141,6 +145,9 @@ contract("ERC20RupiahToken Blacklistable", function([
     });
 
     describe("allow transfer when blacklisted then unblacklisted", function() {
+      const sending = 5000;
+      const fee = parseInt(sending * ratio);
+
       beforeEach(async function() {
         await this.token.blacklist(account_1, { from: owner });
       });
@@ -148,13 +155,14 @@ contract("ERC20RupiahToken Blacklistable", function([
       describe("the account is sender", function() {
         it("allows transfer", async function() {
           await this.token.unblacklist(account_1, { from: owner });
-          await this.token.transfer(account_2, 10, { from: account_1 });
+          const balance = await this.token.balanceOf(account_2);
+          await this.token.transfer(account_2, sending, { from: account_1 });
 
           (await this.token.balanceOf(account_1)).should.be.bignumber.equal(
-            "9990"
+            (sending - fee).toString()
           );
           (await this.token.balanceOf(account_2)).should.be.bignumber.equal(
-            "10010"
+            balance.add(new BN(sending))
           );
         });
       });
@@ -162,13 +170,14 @@ contract("ERC20RupiahToken Blacklistable", function([
       describe("the account is receiver", function() {
         it("allows receive", async function() {
           await this.token.unblacklist(account_1, { from: owner });
-          await this.token.transfer(account_1, 10, { from: account_2 });
+          const balance = await this.token.balanceOf(account_1);
+          await this.token.transfer(account_1, sending, { from: account_2 });
 
           (await this.token.balanceOf(account_2)).should.be.bignumber.equal(
-            "9990"
+            (sending - fee).toString()
           );
           (await this.token.balanceOf(account_1)).should.be.bignumber.equal(
-            "10010"
+            balance.add(new BN(sending))
           );
         });
       });
@@ -454,7 +463,7 @@ contract("ERC20RupiahToken Blacklistable", function([
       describe("the account is spender", function() {
         it("allows tx", async function() {
           await this.token.unblacklist(account_1, { from: owner });
-          this.token.transferFrom(account_2, anotherAccount, 10, {
+          await this.token.transferFrom(account_2, anotherAccount, 10, {
             from: account_1
           });
 
@@ -470,7 +479,7 @@ contract("ERC20RupiahToken Blacklistable", function([
       describe("the account is holder", function() {
         it("allows tx", async function() {
           await this.token.unblacklist(account_1, { from: owner });
-          this.token.transferFrom(account_1, anotherAccount, 10, {
+          await this.token.transferFrom(account_1, anotherAccount, 10, {
             from: account_2
           });
 
@@ -504,7 +513,7 @@ contract("ERC20RupiahToken Blacklistable", function([
       describe("the owner mints to the account", function() {
         it("allows tx", async function() {
           await this.token.unblacklist(account_1, { from: owner });
-          this.token.mint(account_1, 100, { from: owner });
+          await this.token.mint(account_1, 100, { from: owner });
 
           (await this.token.balanceOf(account_1)).should.be.bignumber.equal(
             "20000"
