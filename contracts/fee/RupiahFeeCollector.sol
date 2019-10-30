@@ -4,8 +4,9 @@ import "../math/SafeMath.sol";
 import "./IFeeCollector.sol";
 import "../ownership/Ownable.sol";
 import "../token/ERC20RupiahTokenV1.sol";
+import "../lifecycle/Pausable.sol";
 
-contract RupiahFeeCollector is IFeeCollector, Ownable {
+contract RupiahFeeCollector is IFeeCollector, Pausable {
     using SafeMath for uint256;
 
     event DistributeFee(address indexed _collector, uint256 _value);
@@ -51,13 +52,13 @@ contract RupiahFeeCollector is IFeeCollector, Ownable {
     }
 
     /**
-      address[] _initFromWhitelistEntries `from` whitelist`from` 화이트리스트 주소 목록
-      address[] _initToWhitelistEntries `to` whitelist `to` 화이트리스트 주소 목록
-      address[] _initFeeCollectorEntries account list of fee collectors FeeCollector의 주소 목록  !! 아래 비율과 순서가 맞아야 함 !!
-      uint256[] _initFeeRatioInCollectorsEntries fee ratio list, each collector have 각 FeeCollecor 간 fee 비율 ex 10, 20, 30
-      address _initIDRTContractAddress Contract Address of RupiahToken RupiahToken 컨트랙트 주소
-      uint256 _initFeeRatioNumerator numerator of total fee ratio 전체 수수료 비율의 분자   예) 1.5%를 구현하고 싶으면 => 15
-      uint256 _initFeeRatioDenominator denominator of total fee ratio 전체 수수료 비율의 분모 예) 1.5%를 구현하고 싶으면 => 1000
+      address[] _initFromWhitelistEntries `from` whitelist. `from` 화이트리스트 주소 목록
+      address[] _initToWhitelistEntries `to` whitelist. `to` 화이트리스트 주소 목록
+      address[] _initFeeCollectorEntries account list of fee collectors. keeping in mind that _initFeeCollectorEntries must have same indies with _initFeeRatioInCollectorsEntries. FeeCollector의 주소 목록  !! 아래 비율과 순서가 맞아야 함 !!
+      uint256[] _initFeeRatioInCollectorsEntries fee ratio list, each collector have. 각 FeeCollecor 간 fee 비율 ex 10, 20, 30
+      address _initIDRTContractAddress Contract Address of RupiahToken. RupiahToken 컨트랙트 주소
+      uint256 _initFeeRatioNumerator numerator of total fee ratio. 전체 수수료 비율의 분자   예) 1.5%를 구현하고 싶으면 => 15
+      uint256 _initFeeRatioDenominator denominator of total fee ratio. 전체 수수료 비율의 분모 예) 1.5%를 구현하고 싶으면 => 1000
     */
     constructor(address[] _initFromWhitelistEntries, address[] _initToWhitelistEntries,
         address[] _initFeeCollectorEntries, uint256[] _initFeeRatioInCollectorsEntries,
@@ -91,7 +92,7 @@ contract RupiahFeeCollector is IFeeCollector, Ownable {
 
         _feeDenominatorInCollectors = sum;
     }
-    function calcFee(address _from, address _to, uint256 _value) public onlyRupiahToken returns (uint256) {
+    function calcFee(address _from, address _to, uint256 _value) public onlyRupiahToken whenNotPaused returns (uint256) {
         if (isWhitelist(_from, SENDER) || isWhitelist(_to, RECEIVER) || _from == address(this)) {
             return 0;
         }
@@ -120,11 +121,11 @@ contract RupiahFeeCollector is IFeeCollector, Ownable {
         return fee;
     }
 
-    function withdraw() external onlyCollectors returns (uint256) {
+    function withdraw() external whenNotPaused onlyCollectors returns (uint256) {
         return _withdraw(msg.sender);
     }
 
-    function withdrawAll() external onlyOwner returns (uint256) {
+    function withdrawAll() external whenNotPaused onlyOwner returns (uint256) {
         uint256 sum = 0;
         for (uint16 i = 0; i < _feeCollectors.length; i++) {
             sum = sum.add(_withdraw(_feeCollectors[i]));
@@ -142,7 +143,7 @@ contract RupiahFeeCollector is IFeeCollector, Ownable {
         emit Withdraw(_to, balance);
         return balance;
     }
-    function isWhitelist(address addr, uint8 whitelistType) public view returns (bool) {
+    function isWhitelist(address addr, uint8 whitelistType)  public whenNotPaused view returns (bool) {
         require(whitelistType == SENDER|| whitelistType == RECEIVER);
 
         if (whitelistType == SENDER) {
@@ -154,11 +155,11 @@ contract RupiahFeeCollector is IFeeCollector, Ownable {
         return false;
     }
 
-    function addWhitelist(address addr, uint8 whitelistType) external onlyOwner returns (bool) {
+    function addWhitelist(address addr, uint8 whitelistType) external whenNotPaused onlyOwner returns (bool) {
         return _addWhitelist(addr, whitelistType);
     }
 
-    function _addWhitelist(address addr, uint8 whitelistType) private onlyOwner returns (bool) {
+    function _addWhitelist(address addr, uint8 whitelistType) private whenNotPaused onlyOwner returns (bool) {
         require(whitelistType == SENDER || whitelistType == RECEIVER);
         require(isWhitelist(addr, whitelistType) == false);
 
@@ -175,7 +176,7 @@ contract RupiahFeeCollector is IFeeCollector, Ownable {
         return true;
     }
 
-    function addWhitelistBulk(address[] addrEntries, uint8 whitelistType) external onlyOwner returns (bool) {
+    function addWhitelistBulk(address[] addrEntries, uint8 whitelistType) external whenNotPaused onlyOwner returns (bool) {
         require(whitelistType == SENDER || whitelistType == RECEIVER);
 
         return _addWhitelistBulk(addrEntries, whitelistType);
@@ -193,7 +194,7 @@ contract RupiahFeeCollector is IFeeCollector, Ownable {
         }
         return true;
     }
-    function deleteWhitelist(address addr, uint8 whitelistType) external onlyOwner returns (bool) {
+    function deleteWhitelist(address addr, uint8 whitelistType) external whenNotPaused onlyOwner returns (bool) {
         require(whitelistType == SENDER || whitelistType == RECEIVER);
         return _deleteWhitelist(addr, whitelistType);
     }
@@ -212,7 +213,7 @@ contract RupiahFeeCollector is IFeeCollector, Ownable {
         return true;
     }
 
-    function deleteWhitelistBulk(address[] addrEntries, uint8 whitelistType) external onlyOwner returns (bool) {
+    function deleteWhitelistBulk(address[] addrEntries, uint8 whitelistType) external whenNotPaused onlyOwner returns (bool) {
         require(whitelistType == SENDER || whitelistType == RECEIVER);
 
         for (uint16 i = 0; i < addrEntries.length; i++) {
@@ -225,7 +226,7 @@ contract RupiahFeeCollector is IFeeCollector, Ownable {
         return true;
     }
 
-    function addFeeWithCollector(address addr, uint256 fee) onlyOwner external returns (bool) {
+    function addFeeWithCollector(address addr, uint256 fee)  external whenNotPaused onlyOwner returns (bool) {
         return _addFeeWithCollector(addr, fee);
     }
     function _addFeeWithCollector(address addr, uint256 fee) private returns (bool) {
@@ -239,7 +240,7 @@ contract RupiahFeeCollector is IFeeCollector, Ownable {
 
         return true;
     }
-    function deleteFeeWithCollector(address addr) onlyOwner external returns (bool){
+    function deleteFeeWithCollector(address addr) external whenNotPaused onlyOwner returns (bool){
         return _deleteFeeWithCollector(addr);
     }
     function _deleteFeeWithCollector(address addr) private returns (bool) {
@@ -272,14 +273,14 @@ contract RupiahFeeCollector is IFeeCollector, Ownable {
         delete _feeCollectors[_feeCollectors.length-1];
         _feeCollectors.length--;
     }
-    function setFeeRatio(uint256 numerator, uint256 denominator) onlyOwner external returns (bool) {
+    function setFeeRatio(uint256 numerator, uint256 denominator) external whenNotPaused onlyOwner returns (bool) {
         require(denominator >= numerator, "Denominator must be bigger than numerator");
         _feeRatioNumeratorFromToken = numerator;
         _feeRatioDenominatorFromToken = denominator;
         return true;
     }
 
-    function getFeeRatio() onlyOwner external view returns (uint256[2] memory) {
+    function getFeeRatio() external whenNotPaused onlyOwner  view returns (uint256[2] memory) {
         return [_feeRatioNumeratorFromToken, _feeRatioDenominatorFromToken];
     }
 
