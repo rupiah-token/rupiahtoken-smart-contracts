@@ -3,7 +3,7 @@ const deployed_addresses_filename = "deployed_addresses.json";
 const assert = require('assert').strict;
 
 const DeployedAddresses = require("./" + deployed_addresses_filename);
-const Config = require("./config.json");
+const Config = require('../test/test_config.json');
 
 const ERC20RupiahToken = artifacts.require("./token/ERC20RupiahToken");
 const IDRTWallet = artifacts.require("./governance/wallet/IDRTWallet");
@@ -12,7 +12,7 @@ const ProxyAdmin = artifacts.require("./zos/upgradeability/ProxyAdmin");
 module.exports = async function(deployer, network, accounts) {
     let token, wallet, proxyAdmin;
     switch(network) {
-        case 'development': 
+        case 'development':
             token = await ERC20RupiahToken.at(DeployedAddresses.dev.tokenProxy);
             wallet = await IDRTWallet.at(DeployedAddresses.dev.walletProxy);
             proxyAdmin = await ProxyAdmin.at(DeployedAddresses.dev.proxyAdmin);
@@ -22,7 +22,7 @@ module.exports = async function(deployer, network, accounts) {
             wallet = await IDRTWallet.at(DeployedAddresses.ropsten.walletProxy);
             proxyAdmin = await ProxyAdmin.at(DeployedAddresses.ropsten.proxyAdmin);
             break;
-        case 'rinkeby':                 
+        case 'rinkeby':
             token = await ERC20RupiahToken.at(DeployedAddresses.rinkeby.tokenProxy);
             wallet = await IDRTWallet.at(DeployedAddresses.rinkeby.walletProxy);
             proxyAdmin = await ProxyAdmin.at(DeployedAddresses.rinkeby.proxyAdmin);
@@ -33,7 +33,7 @@ module.exports = async function(deployer, network, accounts) {
             proxyAdmin = await ProxyAdmin.at(DeployedAddresses.mainnet.proxyAdmin);
             break;
         };
-        
+
     console.log("Change ERC20 Ownership to wallet address...");
     await token.transferOwnership(wallet.address);
 
