@@ -3,20 +3,20 @@ const deployed_addresses_filename = "deployed_addresses.json";
 const assert = require('assert').strict;
 
 const DeployedAddresses = require("./" + deployed_addresses_filename);
-const Config = require("./config.json");
+const Config = require('../test/test_config.json');
 
 const IDRTWallet = artifacts.require("./governance/wallet/IDRTWallet");
 
 module.exports = async function(deployer, network, accounts) {
     let wallet;
 	switch(network) {
-        case 'development': 
+        case 'development':
             wallet = await IDRTWallet.at(DeployedAddresses.dev.walletProxy);
             break;
         case 'ropsten':
             wallet = await IDRTWallet.at(DeployedAddresses.ropsten.walletProxy);
             break;
-        case 'rinkeby':                 
+        case 'rinkeby':
             wallet = await IDRTWallet.at(DeployedAddresses.rinkeby.walletProxy);
             break;
         case 'mainnet':
