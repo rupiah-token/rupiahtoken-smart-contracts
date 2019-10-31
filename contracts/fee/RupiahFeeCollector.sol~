@@ -137,8 +137,8 @@ contract RupiahFeeCollector is IFeeCollector, Pausable {
     function _withdraw(address _to) private returns (uint256){
         uint256 balance = _deposit[_to];
 
+        rupiahToken.transfer(_to, balance);
         _deposit[_to] = 0;
-        require(rupiahToken.transfer(_to, balance));
 
         emit Withdraw(_to, balance);
         return balance;

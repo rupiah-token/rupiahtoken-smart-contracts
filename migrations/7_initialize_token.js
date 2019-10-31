@@ -3,7 +3,7 @@ const deployed_addresses_filename = "deployed_addresses.json";
 const assert = require('assert').strict;
 
 const DeployedAddresses = require("./" + deployed_addresses_filename);
-const Config = require("../test/test_config.json");
+const Config = require("./config.json");
 
 const ERC20RupiahToken = artifacts.require("./token/ERC20RupiahToken");
 
@@ -33,7 +33,7 @@ module.exports = async function(deployer, network, accounts) {
     );
 
     const initialized_name = await token.name();
-	const initialized_symbol = await token.symbol();
+	  const initialized_symbol = await token.symbol();
     const initialized_currency = await token.currency();
     const initialized_decimals = (await token.decimals()).toNumber();
 

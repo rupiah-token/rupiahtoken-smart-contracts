@@ -3,7 +3,7 @@ const deployed_addresses_filename = "deployed_addresses.json";
 const assert = require('assert').strict;
 
 const DeployedAddresses = require("./" + deployed_addresses_filename);
-const Config = require('../test/test_config.json');
+const Config = require('./config.json');
 
 const IDRTWallet = artifacts.require("./governance/wallet/IDRTWallet");
 

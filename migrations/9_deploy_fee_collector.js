@@ -1,7 +1,7 @@
 const fs = require('fs');
 const deployed_addresses_filename = "deployed_addresses.json";
 const DeployedAddresses = require("./" + deployed_addresses_filename);
-const { feeCollector } = require('../test/test_config.json');
+const { feeCollector } = require('./config.json');
 const {
   fromWhitelist,
   toWhitelist,
@@ -10,16 +10,16 @@ const {
   feeRatioNumerator,
   feeRatioDenominator
 } = feeCollector;
-const RupiahFeeColector = artifacts.require('./fee/RupiahFeeCollector');
+const RupiahFeeCollector = artifacts.require('./fee/RupiahFeeCollector');
 
 const ERC20RupiahToken = artifacts.require("./token/ERC20RupiahToken");
 
 module.exports = function (deployer, network, accounts) {
   console.log("deploying fee collector contract...");
   const net = network === 'development' ? 'dev' : network;
-  deployer.deploy(RupiahFeeColector, fromWhitelist, toWhitelist, feeCollectors, feeCollectorRatio, DeployedAddresses[net].tokenProxy, feeRatioNumerator, feeRatioDenominator)
+  deployer.deploy(RupiahFeeCollector, fromWhitelist, toWhitelist, feeCollectors, feeCollectorRatio, DeployedAddresses[net].tokenProxy, feeRatioNumerator, feeRatioDenominator)
     .then(async function () {
-      const deployed = await RupiahFeeColector.deployed();
+      const deployed = await RupiahFeeCollector.deployed();
       DeployedAddresses[net].feeCollector = deployed.address;
       const token = await ERC20RupiahToken.at(DeployedAddresses[net].tokenProxy);
       await token.setCollectorContract(deployed.address);
