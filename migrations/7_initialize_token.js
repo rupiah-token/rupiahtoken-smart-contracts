@@ -3,20 +3,20 @@ const deployed_addresses_filename = "deployed_addresses.json";
 const assert = require('assert').strict;
 
 const DeployedAddresses = require("./" + deployed_addresses_filename);
-const Config = require("./config.json");
+const Config = require("../test/test_config.json");
 
 const ERC20RupiahToken = artifacts.require("./token/ERC20RupiahToken");
 
 module.exports = async function(deployer, network, accounts) {
 	let token;
 	switch(network) {
-        case 'development':	
+        case 'development':
   			token = await ERC20RupiahToken.at(DeployedAddresses.dev.tokenProxy);
   			break;
     	case 'ropsten':
   			token = await ERC20RupiahToken.at(DeployedAddresses.ropsten.tokenProxy);
   			break;
-        case 'rinkeby':    				
+        case 'rinkeby':
   			token = await ERC20RupiahToken.at(DeployedAddresses.rinkeby.tokenProxy);
   			break;
         case 'mainnet':
@@ -29,7 +29,7 @@ module.exports = async function(deployer, network, accounts) {
         Config.token_name,
         Config.token_symbol,
         Config.token_currency,
-        Config.token_decimals	
+        Config.token_decimals
     );
 
     const initialized_name = await token.name();

@@ -7,6 +7,7 @@ const {
 const { ZERO_ADDRESS } = constants;
 const TestUtils = require("./TestUtils");
 const ERC20RupiahToken = artifacts.require("ERC20RupiahToken");
+const { feeCollector } = require('./test_config');
 
 contract("ERC20RupiahToken Pausable", function([
   owner,
@@ -20,7 +21,7 @@ contract("ERC20RupiahToken Pausable", function([
   const _symbol = "IDRT";
   const _currency = "IDR";
   const _decimals = new BN(2);
-
+  const ratio = feeCollector.feeRatioNumerator / feeCollector.feeRatioDenominator;
   const initialSupply = new BN(100 * 10 ** _decimals);
 
   const pauser = owner;
@@ -38,6 +39,8 @@ contract("ERC20RupiahToken Pausable", function([
 
     this.token = await ERC20RupiahToken.at(tokenProxy.address);
     await TestUtils.initializeTokenProxy(this.token);
+    this.feeCollector = await TestUtils.createFeeCollector(tokenProxy.address, owner);
+    await this.token.setCollectorContract(this.feeCollector.address);
 
     await this.token.mint(pauser, 100);
   });
@@ -121,24 +124,28 @@ contract("ERC20RupiahToken Pausable", function([
     });
 
     describe("transfer", function() {
+      const sending = 5000;
       it("allows to transfer when unpaused", async function() {
-        await this.token.transfer(recipient, initialSupply, { from: pauser });
+        const balance = await this.token.balanceOf(pauser);
+        const receiptBalance = await this.token.balanceOf(recipient);
+        await this.token.transfer(recipient, sending, { from: pauser });
 
-        (await this.token.balanceOf(pauser)).should.be.bignumber.equal("0");
+        (await this.token.balanceOf(pauser)).should.be.bignumber.equal(balance.sub(new BN(sending))); // no fee because pauser is owner
         (await this.token.balanceOf(recipient)).should.be.bignumber.equal(
-          initialSupply
+          receiptBalance.add(new BN(sending))
         );
       });
 
       it("allows to transfer when paused and then unpaused", async function() {
         await this.token.pause({ from: pauser });
         await this.token.unpause({ from: pauser });
+        const balance = await this.token.balanceOf(pauser);
+        const receiptBalance = await this.token.balanceOf(recipient);
+        await this.token.transfer(recipient, sending, { from: pauser });
 
-        await this.token.transfer(recipient, initialSupply, { from: pauser });
-
-        (await this.token.balanceOf(pauser)).should.be.bignumber.equal("0");
+        (await this.token.balanceOf(pauser)).should.be.bignumber.equal(balance.sub(new BN(sending)));
         (await this.token.balanceOf(recipient)).should.be.bignumber.equal(
-          initialSupply
+          receiptBalance.add(new BN(sending))
         );
       });
 
