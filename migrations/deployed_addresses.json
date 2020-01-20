@@ -1,5 +1,12 @@
 {
-  "dev": {},
+  "dev": {
+    "proxyAdmin": "0xe424d9F6ff0a1C96B51fd9568f059DeFDCCD9AC4",
+    "tokenImplementationV1": "0x761a6B6bbCbd4603655B76901091E3B4765d39ad",
+    "walletImplementationV1": "0x3C25cCEcE1F10967e45cAb196352d4162C15FE95",
+    "tokenProxy": "0xf660C9Df7FF09B89E9d7a85595AB885670A73948",
+    "walletProxy": "0xfF46C3eec26ef1540108Bb8612648677E67C3a8C",
+    "feeCollector": "0x6cE5678B5968569cC58df0f4D9a10E04ae3c21A5"
+  },
   "ropsten": {},
   "rinkeby": {},
   "mainnet": {}

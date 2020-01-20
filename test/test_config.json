@@ -1,0 +1,39 @@
+{
+  "deployer": "0xF5f13c6eEfe14381FF6e008649aAbD1d0108Ccc2",
+  "admin_1": "0x0135e7d837a29897a530014e5DF66303f3FA9087",
+  "admin_2": "0xbbD8d7a7a24cDBE8B123A7e0cb6D16FC6D5D6b67",
+  "admin_3": "0xF96165a22307F7B4AEe789FE5144a7d6E11f8A77",
+  "owner": "0xC7D6951cc03CBCE5702DCdEea4485784Bb81a775",
+  "exchanger": "0x798d283AfC62e0a664dC3B652771c3D742697929",
+  "user_1": "0xfaF2e35AD5f591277e26508a05F1771F8C32Ff80",
+  "user_2": "0xc5482236808D9FCC054d2B39D833d75a932a65A4",
+  "attacker": "0x7453507F94bF7708344467B32133796FF2317736",
+  "token_name": "Rupiah Token",
+  "token_symbol": "IDRT",
+  "token_currency": "IDR",
+  "token_decimals": 2,
+  "number_of_required_confirmations": 2,
+  "print_limit": 100000000,
+  "feeCollector": {
+    "fromWhitelist": [
+      "0xF5f13c6eEfe14381FF6e008649aAbD1d0108Ccc2",
+      "0xfaF2e35AD5f591277e26508a05F1771F8C32Ff80",
+      "0xc5482236808D9FCC054d2B39D833d75a932a65A4"
+    ],
+    "toWhitelist": [
+      "0xF5f13c6eEfe14381FF6e008649aAbD1d0108Ccc2",
+      "0xC7D6951cc03CBCE5702DCdEea4485784Bb81a775",
+      "0x798d283AfC62e0a664dC3B652771c3D742697929"
+    ],
+    "feeCollectors": [
+      "0xc5482236808D9FCC054d2B39D833d75a932a65A4",
+      "0x7453507F94bF7708344467B32133796FF2317736"
+    ],
+    "feeCollectorRatio": [
+      40,
+      60
+    ],
+    "feeRatioNumerator": 15,
+    "feeRatioDenominator": 1000
+  }
+}
