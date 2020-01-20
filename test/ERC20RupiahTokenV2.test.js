@@ -112,12 +112,6 @@ contract("ERC20RupiahTokenV2", function([
             (await this.token.totalSupply()).should.be.bignumber.equal("10000");
         });
 
-        it("should acquire V2 functions and storage", async function() {
-            (await this.token.shouldBeAString()).should.equal("Upgraded to V2");
-            (await this.token.shouldBeEmptyString()).should.equal("");
-            (await this.token.getUpgradeTest("success")).should.equal("success");
-        });
-
         it("should not reenable initialize function", async function() {
             await shouldFail.reverting(
                 this.token.initialize(_name, _symbol, _currency, _decimals, {from: deployer})

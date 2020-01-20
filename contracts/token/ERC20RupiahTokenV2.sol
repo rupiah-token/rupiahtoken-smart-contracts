@@ -58,39 +58,54 @@ import "./ERC20RupiahTokenV1.sol";
  * For demo purpose of zos upgradeability 
  */
 contract ERC20RupiahTokenV2 is ERC20RupiahToken {
-    string constant public shouldBeAString = "Upgraded to V2";
-    string public shouldBeEmptyString = "Upgraded to V2";
-    // minimum token to be transferred
+    // Minimum token to be transferred
     uint256 internal _minimumTransfer = 0;
-
-   /**
-    * @dev Function to test new added functionality to the implementation.
-    * @param success string to return
-    * @return string memory from the input
+    
+    /**
+    * @dev transfer IDRTL with some amount of fee, with some minimum amount
+    * see ERC20RupiahToken#_transferWithFee
+    * @param from address of sender
+    * @param to address of receiver
+    * @param value value to transfer
+    * @param bridge contract address that collects the fee
     */
-    function getUpgradeTest(string memory success) public pure returns (string memory) {
-        return success;
-    }
-
     function _transferWithFee(address from, address to, uint256 value, address bridge) internal {
         require(value >= _minimumTransfer, "ERC20RupiahTokenV2: transfer less than minimumTransfer");
         super._transferWithFee(from, to, value, bridge);
     }
 
-    function setMinimumTransfer(uint256 min) external whenNotPaused onlyOwner returns (bool){
-        _setMinimumTransfer(min);
-        return true;
+    /**
+    * @dev external function to set minimum transfer value
+    * Can only be called by token owner
+    * @param min value for transfer to be able to go through
+    * @return bool
+    */
+    function setMinimumTransfer(uint256 min) external whenNotPaused onlyOwner returns (bool) {
+        return _setMinimumTransfer(min);
     }
 
+    /**
+    * @dev internal function to set minimum transfer value
+    * @param min value for transfer to be able to go through
+    * @return bool
+    */
     function _setMinimumTransfer(uint256 min) internal returns (bool) {
         _minimumTransfer = min;
         return true;
     }
 
+    /**
+    * @dev external function to get minimum transfer value
+    * @return uint of minimum transfer value
+    */
     function getMinimumTransfer() external whenNotPaused view returns (uint256) {
         return _getMinimumTransfer();
     }
 
+    /**
+    * @dev internal function to get the minimum transfer value
+    * @return uint of minimum transfer value
+    */
     function _getMinimumTransfer() internal view returns (uint256) {
         return _minimumTransfer;
     }
