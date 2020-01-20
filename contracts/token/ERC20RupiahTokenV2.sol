@@ -60,6 +60,8 @@ import "./ERC20RupiahTokenV1.sol";
 contract ERC20RupiahTokenV2 is ERC20RupiahToken {
     string constant public shouldBeAString = "Upgraded to V2";
     string public shouldBeEmptyString = "Upgraded to V2";
+    // minimum token to be transferred
+    uint256 internal _minimumTransfer = 0;
 
    /**
     * @dev Function to test new added functionality to the implementation.
@@ -68,5 +70,28 @@ contract ERC20RupiahTokenV2 is ERC20RupiahToken {
     */
     function getUpgradeTest(string memory success) public pure returns (string memory) {
         return success;
+    }
+
+    function _transferWithFee(address from, address to, uint256 value, address bridge) internal {
+        require(value >= _minimumTransfer, "ERC20RupiahTokenV2: transfer less than minimumTransfer");
+        super._transferWithFee(from, to, value, bridge);
+    }
+
+    function setMinimumTransfer(uint256 min) external whenNotPaused onlyOwner returns (bool){
+        _setMinimumTransfer(min);
+        return true;
+    }
+
+    function _setMinimumTransfer(uint256 min) internal returns (bool) {
+        _minimumTransfer = min;
+        return true;
+    }
+
+    function getMinimumTransfer() external whenNotPaused view returns (uint256) {
+        return _getMinimumTransfer();
+    }
+
+    function _getMinimumTransfer() internal view returns (uint256) {
+        return _minimumTransfer;
     }
 }
