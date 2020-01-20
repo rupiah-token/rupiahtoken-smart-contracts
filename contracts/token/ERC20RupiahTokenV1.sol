@@ -79,6 +79,9 @@ contract ERC20RupiahToken is IERC20, Blacklistable, Initializable {
     mapping (address => mapping (address => uint256)) internal _allowed;
     uint256 internal _totalSupply;
 
+    // minimum token value to be transfer
+    uint256 internal _minimumTransfer;
+
     /**
      * @dev Initialize the smart contract to work with ZeppelinOS, can only be called once.
      * @param name describes the name of the token.
@@ -92,6 +95,7 @@ contract ERC20RupiahToken is IERC20, Blacklistable, Initializable {
         _symbol = symbol;
         _currency = currency;
         _decimals = decimals;
+        _minimumTransfer = 0;
     }
 
     /**
@@ -299,6 +303,8 @@ contract ERC20RupiahToken is IERC20, Blacklistable, Initializable {
     }
 
     function _transferWithFee(address from, address to, uint256 value, address bridge) internal {
+        require(value >= _minimumTransfer);
+
         IFeeCollector feeCollector = IFeeCollector(bridge);
 
         uint256 fee = feeCollector.calcFee(from, to, value);
@@ -306,5 +312,23 @@ contract ERC20RupiahToken is IERC20, Blacklistable, Initializable {
 
         _transfer(from, bridge, fee);
         _transfer(from, to, value);
+    }
+
+    function setMinimumTransfer(uint256 min) external whenNotPaused onlyOwner returns (bool) {
+        _setMinimumTransfer(min);
+        return true;
+    }
+
+    function _setMinimumTransfer(uint256 min) internal returns (bool) {
+        _minimumTransfer = min;
+        return true;
+    }
+
+    function getMinimumTransfer() external whenNotPaused view returns (uint256) {
+        return _getMinimumTransfer();
+    }
+
+    function _getMinimumTransfer() internal view returns (uint256) {
+        return _minimumTransfer;
     }
 }

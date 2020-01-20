@@ -125,6 +125,42 @@ contract("ERC20RupiahToken", function([
           });
         });
       });
+
+      describe("about minimum token value", function () {
+        const min = 100;
+        const amount = sending+min;
+        const fee = parseInt(amount * ratio / 100);
+
+        beforeEach(async () => {
+          await token.setMinimumTransfer(min);
+        });
+
+        afterEach(async () => {
+          await token.setMinimumTransfer(0);
+        });
+
+        it('checks minimum value', async function() {
+          const minimum = await token.getMinimumTransfer();
+          minimum.should.be.bignumber.equal(min.toString());
+        });
+
+        it("transfers much more money than minimum", async function () {
+          const initBalance = await token.balanceOf(initialHolder);
+          await token.transfer(to, amount, { from: initialHolder });
+          (await token.balanceOf(initialHolder)).should.be.bignumber.equal(
+            (initBalance - fee - amount).toString()
+          );
+
+          (await token.balanceOf(to)).should.be.bignumber.equal(amount.toString());
+        });
+
+        it("transfers less than minimum", async function () {
+          const amount = min - 1;
+          await shouldFail.reverting(
+            token.transfer(to, amount, { from: initialHolder })
+          );
+        });
+      });
     });
 
     describe("when the recipient is the zero address", function () {
