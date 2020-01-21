@@ -54,8 +54,8 @@ import "./ERC20RupiahTokenV1.sol";
 
 /**
  * @title ERC20RupiahTokenV2 
- * @dev Version 2 for ERC20RupiahToken
- * For demo purpose of zos upgradeability 
+ * @dev Version 2 for ERC20RupiahToken (Luniverse)
+ * Contains code to set and enforce minimum transfer of IDRT
  */
 contract ERC20RupiahTokenV2 is ERC20RupiahToken {
     // Minimum token to be transferred
