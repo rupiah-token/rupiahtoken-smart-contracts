@@ -9,7 +9,7 @@ const IDRTWallet = artifacts.require("./governance/wallet/IDRTWallet");
 
 module.exports = async function(deployer, network, accounts) {
     let wallet;
-	switch(network) {
+	switch(network.split('-')[0]) {
         case 'development': 
             wallet = await IDRTWallet.at(DeployedAddresses.dev.walletProxy);
             break;

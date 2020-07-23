@@ -9,7 +9,7 @@ const ERC20RupiahToken = artifacts.require("./token/ERC20RupiahToken");
 
 module.exports = async function(deployer, network, accounts) {
 	let token;
-	switch(network) {
+	switch(network.split('-')[0]) {
         case 'development':	
   			token = await ERC20RupiahToken.at(DeployedAddresses.dev.tokenProxy);
   			break;

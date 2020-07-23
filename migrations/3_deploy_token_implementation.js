@@ -8,7 +8,7 @@ module.exports = function(deployer, network, accounts) {
     console.log("deploying token implementation contract...");
     deployer.deploy(ERC20RupiahTokenImplementation)
     	.then(async function () {
-    		switch(network) {
+    		switch(network.split('-')[0]) {
                 case 'development':
 		    		DeployedAddresses.dev.tokenImplementationV1 = (await ERC20RupiahTokenImplementation.deployed()).address;
 		    		break;

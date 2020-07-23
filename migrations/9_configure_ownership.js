@@ -11,7 +11,7 @@ const ProxyAdmin = artifacts.require("./zos/upgradeability/ProxyAdmin");
 
 module.exports = async function(deployer, network, accounts) {
     let token, wallet, proxyAdmin;
-    switch(network) {
+    switch(network.split('-')[0]) {
         case 'development': 
             token = await ERC20RupiahToken.at(DeployedAddresses.dev.tokenProxy);
             wallet = await IDRTWallet.at(DeployedAddresses.dev.walletProxy);

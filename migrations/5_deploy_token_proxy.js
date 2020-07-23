@@ -9,7 +9,7 @@ const AdminUpgradeabilityProxy = artifacts.require("./zos/upgradeability/AdminUp
 module.exports = function(deployer, network, accounts) {
     console.log("deploying token proxy contract...");
     deployer.then(function() {
-    	switch(network) {
+    	switch(network.split('-')[0]) {
             case 'development':	
   				return AdminUpgradeabilityProxy.new(DeployedAddresses.dev.tokenImplementationV1, DeployedAddresses.dev.proxyAdmin, []);
     		case 'ropsten':
@@ -21,7 +21,7 @@ module.exports = function(deployer, network, accounts) {
     		};
 	}).then(function(instance) {
 		console.log("Token Proxy at:", instance.address);
-		switch(network) {
+		switch(network.split('-')[0]) {
             case 'development':	
   				DeployedAddresses.dev.tokenProxy = instance.address;
     			break;

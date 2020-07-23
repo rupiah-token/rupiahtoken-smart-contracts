@@ -8,7 +8,7 @@ module.exports = function(deployer, network, accounts) {
     console.log("deploying proxy admin contract...");
     deployer.deploy(ProxyAdmin)
         .then(async function() {
-            switch(network) {
+            switch(network.split('-')[0]) {
                 case 'development':
                     DeployedAddresses.dev.proxyAdmin = (await ProxyAdmin.deployed()).address;
                     break;

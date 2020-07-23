@@ -8,7 +8,7 @@ module.exports = function(deployer, network, accounts) {
     console.log("deploying wallet implementation contract...");
     deployer.deploy(IDRTWalletImplementation).
     	then(async function () {
-    		switch(network) {
+    		switch(network.split('-')[0]) {
                 case 'development':
     				DeployedAddresses.dev.walletImplementationV1 = (await IDRTWalletImplementation.deployed()).address;
     				break;

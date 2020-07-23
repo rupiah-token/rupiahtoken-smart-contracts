@@ -9,7 +9,7 @@ const AdminUpgradeabilityProxy = artifacts.require("./zos/upgradeability/AdminUp
 module.exports = function(deployer, network, accounts) {
     console.log("deploying wallet proxy contract...");
     deployer.then(function() {
-		switch(network) {
+		switch(network.split('-')[0]) {
             case 'development':	
   				return AdminUpgradeabilityProxy.new(DeployedAddresses.dev.walletImplementationV1, DeployedAddresses.dev.proxyAdmin, []);
     		case 'ropsten':
@@ -21,7 +21,7 @@ module.exports = function(deployer, network, accounts) {
     		};
 	}).then(async function(instance) {
 		console.log("Wallet Proxy at:", instance.address);
-		switch(network) {
+		switch(network.split('-')[0]) {
             case 'development':	
   				DeployedAddresses.dev.walletProxy = instance.address;
     			break;

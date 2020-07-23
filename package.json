@@ -24,6 +24,9 @@
     "assert": "^2.0.0",
     "openzeppelin-test-helpers": "^0.2.0",
     "truffle-hdwallet-provider": "^1.0.4",
-    "web3": "^1.2.1"
+    "web3": "^1.2.1",
+    "@harmony-js/core": "^0.1.49",
+    "dotenv": "^8.1.0",
+    "tslib": "^1.10.0"
   }
 }
